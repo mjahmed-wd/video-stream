@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .slidecontainer input {
+        width: 420px;
+      }
+      .slidecontainer {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="text-align: center">
+      <button onclick="playPause()">Play/Pause</button>
+      <button onclick="makeBig()">Big</button>
+      <button onclick="makeSmall()">Small</button>
+      <button onclick="makeNormal()">Normal</button>
+      <br />
+      <button onclick="backward()"><</button>
+      <button onclick="forward()">></button>
+      <br />
+      <div class="slidecontainer">
+        <input
+          type="range"
+          min="1"
+          max="100"
+          value=""
+          class="slider"
+          id="myRange"
+          onchange="changeTime()"
+        />
+      </div>
+      <br /><br />
+      <video id="video1" width="420">
+        <source src="video.mp4" type="video/mp4" />
+        Your browser does not support HTML video.
+      </video>
+    </div>
+
+    <script>
+      var myVideo = document.getElementById("video1");
+      var currentTime = (myVideo.currentTime * 100) / myVideo.duration;
+      var duration = myVideo.duration;
+      var myRange = document.getElementById("myRange");
+
+      
+
+      function playPause() {
+        if (myVideo.paused) myVideo.play();
+        else myVideo.pause();
+      }
+
+      function makeBig() {
+        myVideo.width = 560;
+      }
+
+      function makeSmall() {
+        myVideo.width = 320;
+      }
+
+      function makeNormal() {
+        myVideo.width = 420;
+      }
+      function forward() {
+        myVideo.currentTime += 20;
+      }
+      function backward() {
+        myVideo.currentTime -= 20;
+      }
+      function changeTime() {
+      myVideo.currentTime= (myRange.value*myVideo.duration)/100
+      }
+      myVideo.ontimeupdate = () => {myRange.setAttribute("value",(myVideo.currentTime * 100) / myVideo.duration );}
+    </script>
+  </body>
+</html>
