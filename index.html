@@ -6,36 +6,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      .slidecontainer input {
+      .container {
         width: 420px;
+        position: relative;
+      }
+      .slidecontainer input {
+        width: 100%;
       }
       .slidecontainer {
+        position: absolute;
+        bottom: 5%;
+        left: 0;
+        width: 100%;
         display: flex;
         justify-content: center;
+        z-index: 5;
       }
+      /* .soundContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      } */
+      .soundContainer input[type="range"][orient="vertical"] {
+        writing-mode: bt-lr; /* IE */
+        -webkit-appearance: slider-vertical; /* WebKit */
+        width: 2px;
+        height: 50px;
+        padding: 0 1px;
+      }
+      video {
+        z-index: -1;
+      }
+      .soundContainer {
+        display: flex;
+        justify-content: start;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        z-index: 5;
+      }
+      .w-90 {
+        width: 55px;
+        z-index: 5;
+      }
+      /* input[type="range"] {
+        height: 18px;
+        -webkit-appearance: none;
+        margin: 10px 0;
+        width: 100%;
+      }
+      input[type="range"]:focus {
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 3px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 1px #000000;
+        background: #3071a9;
+        border-radius: 4px;
+        border: 0px solid #000000;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        box-shadow: 1px 1px 1px #000000;
+        border: 1px solid #000000;
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        background: #ffffff;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -4px;
+      }
+      input[type="range"]:focus::-webkit-slider-runnable-track {
+        background: #3071a9;
+      }
+      input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 3px;
+        cursor: pointer;
+        animate: 0.2s;
+        box-shadow: 0px 0px 1px #000000;
+        background: #3071a9;
+        border-radius: 4px;
+        border: 0px solid #000000;
+      }
+      input[type="range"]::-moz-range-thumb {
+        box-shadow: 1px 1px 1px #000000;
+        border: 1px solid #000000;
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      input[type="range"]::-ms-track {
+        width: 100%;
+        height: 3px;
+        cursor: pointer;
+        animate: 0.2s;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type="range"]::-ms-fill-lower {
+        background: #3071a9;
+        border: 0px solid #000000;
+        border-radius: 8px;
+        box-shadow: 0px 0px 1px #000000;
+      }
+      input[type="range"]::-ms-fill-upper {
+        background: #3071a9;
+        border: 0px solid #000000;
+        border-radius: 8px;
+        box-shadow: 0px 0px 1px #000000;
+      }
+      input[type="range"]::-ms-thumb {
+        margin-top: 1px;
+        box-shadow: 1px 1px 1px #000000;
+        border: 1px solid #000000;
+        height: 10px;
+        width: 10px;
+        border-radius: 10px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      input[type="range"]:focus::-ms-fill-lower {
+        background: #3071a9;
+      }
+      input[type="range"]:focus::-ms-fill-upper {
+        background: #3071a9;
+      } */
     </style>
   </head>
   <body>
-    <div style="text-align: center">
+    <button onclick="makeSmall()">Small</button>
+    <button onclick="makeNormal()">Normal</button>
+    <div class="container" style="text-align: center">
       <button onclick="playPause()">Play/Pause</button>
       <button onclick="makeBig()">Big</button>
-      <button onclick="makeSmall()">Small</button>
-      <button onclick="makeNormal()">Normal</button>
       <br />
       <button onclick="backward()"><</button>
       <button onclick="forward()">></button>
       <br />
-      <div class="slidecontainer">
-        <input
-          type="range"
-          min="1"
-          max="100"
-          value=""
-          class="slider"
-          id="myRange"
-          onchange="changeTime()"
-        />
+      <div class="w-90">
+        <div class="slidecontainer">
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value="1"
+            class="slider"
+            id="myRange"
+            onchange="changeTime()"
+          />
+        </div>
+      <span id="speaker" onclick="fullScreenHandler()">⛶</span>
+        
+        <div class="soundContainer">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value="1"
+            class="slider"
+            id="soundRange"
+            onchange="changeSound()"
+          />
+          <span id="speaker" onclick="muteHandler()">🔊</span>
+        </div>
       </div>
+
       <br /><br />
       <video id="video1" width="420">
         <source src="video.mp4" type="video/mp4" />
@@ -48,8 +192,8 @@
       var currentTime = (myVideo.currentTime * 100) / myVideo.duration;
       var duration = myVideo.duration;
       var myRange = document.getElementById("myRange");
-
-      
+      var soundRange = document.getElementById("soundRange");
+      var speaker = document.getElementById("speaker");
 
       function playPause() {
         if (myVideo.paused) myVideo.play();
@@ -68,15 +212,42 @@
         myVideo.width = 420;
       }
       function forward() {
-        myVideo.currentTime += 20;
+        myVideo.currentTime += 5;
       }
       function backward() {
-        myVideo.currentTime -= 20;
+        myVideo.currentTime -= 5;
       }
       function changeTime() {
-      myVideo.currentTime= (myRange.value*myVideo.duration)/100
+        myVideo.currentTime = (myRange.value * myVideo.duration) / 100;
       }
-      myVideo.ontimeupdate = () => {myRange.setAttribute("value",(myVideo.currentTime * 100) / myVideo.duration );}
+      function changeSound() {
+        myVideo.volume = (1 * soundRange.value) / 100;
+        if (myVideo.volume === 0) {
+          myVideo.muted = true;
+          speaker.innerText = "🔇";
+        } else {
+          myVideo.muted = false;
+          speaker.innerText = "🔊";
+        }
+      }
+      function muteHandler() {
+        if (myVideo.muted) {
+          myVideo.muted = false;
+          myVideo.volume = 1;
+          speaker.innerText = "🔊";
+        } else {
+          myVideo.muted = true;
+          myVideo.volume = 0;
+          speaker.innerText = "🔇";
+        }
+      }
+      myVideo.ontimeupdate = () => {
+        myRange.setAttribute(
+          "value",
+          (myVideo.currentTime * 100) / myVideo.duration
+        );
+        console.log(myVideo.currentTime);
+      };
     </script>
   </body>
 </html>
