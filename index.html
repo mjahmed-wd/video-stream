@@ -7,9 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
+      span {
+        color: white;
+        cursor: pointer;
+      }
       .container {
-        width: 420px;
+        /* width: 50vw; */
         position: relative;
+        text-align: center;
+        /* visibility: hidden; */
       }
       .slidecontainer input {
         width: 100%;
@@ -51,6 +57,13 @@
       .w-90 {
         width: 55px;
         z-index: 5;
+      }
+      #fullSreen {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        z-index: 555;
+        color: white;
       }
       /* input[type="range"] {
         height: 18px;
@@ -146,8 +159,13 @@
   <body>
     <button onclick="makeSmall()">Small</button>
     <button onclick="makeNormal()">Normal</button>
-    <div class="container" style="text-align: center">
-      <button onclick="playPause()">Play/Pause</button>
+    <div
+      class="container"
+      onmouseenter="showInput()"
+      onmouseleave="hideInput()"
+      style="width: 50vw"
+    >
+      <!-- <button onclick="playPause()">Play/Pause</button> -->
       <button onclick="makeBig()">Big</button>
       <br />
       <button onclick="backward()"><</button>
@@ -163,11 +181,14 @@
             class="slider"
             id="myRange"
             onchange="changeTime()"
+            style="visibility: hidden"
           />
         </div>
-      <span id="fullScreen onclick="fullScreenHandler()">⛶</span>
-        
+        <span id="fullSreen" onclick="fullScreenHandler()">⛶</span>
+
         <div class="soundContainer">
+          <span onclick="playPause()" id="playPause">⏸</span>
+          <span id="speaker" onclick="muteHandler()">🔊</span>
           <input
             type="range"
             min="0"
@@ -177,12 +198,11 @@
             id="soundRange"
             onchange="changeSound()"
           />
-          <span id="speaker" onclick="muteHandler()">🔊</span>
         </div>
       </div>
 
       <br /><br />
-      <video id="video1" width="420">
+      <video id="video1" width="100%">
         <source src="video.mp4" type="video/mp4" />
         Your browser does not support HTML video.
       </video>
@@ -195,10 +215,27 @@
       var myRange = document.getElementById("myRange");
       var soundRange = document.getElementById("soundRange");
       var speaker = document.getElementById("speaker");
+      var container = document.getElementsByClassName("container")[0];
+      var playPauseBtn = document.getElementById("playPause");
 
+      myRange.setAttribute("value", 1);
+      soundRange.setAttribute("value", 100);
+
+      function showInput() {
+        myRange.style.visibility = "visible";
+      }
+      function hideInput() {
+        myRange.style.visibility = "hidden";
+      }
       function playPause() {
-        if (myVideo.paused) myVideo.play();
-        else myVideo.pause();
+        console.log("clicked")
+        if (myVideo.paused) {
+          myVideo.play();
+          playPauseBtn.innerText = "⏸";
+        } else {
+          myVideo.pause();
+          playPauseBtn.innerText = "▶";
+        }
       }
 
       function makeBig() {
@@ -242,12 +279,27 @@
           speaker.innerText = "🔇";
         }
       }
+
+      function fullScreenHandler() {
+        console.log("clicked");
+        if (container.style.width === "50vw") {
+          container.style.width = "100vw";
+        } else {
+          container.style.width = "50vw";
+        }
+      }
       myVideo.ontimeupdate = () => {
         myRange.setAttribute(
           "value",
           (myVideo.currentTime * 100) / myVideo.duration
         );
-        console.log(myVideo.currentTime);
+        console.log(
+          "time is ",
+          myVideo.currentTime,
+          " and process is ",
+          (myVideo.currentTime * 100) / myVideo.duration,
+          " % done"
+        );
       };
     </script>
   </body>
