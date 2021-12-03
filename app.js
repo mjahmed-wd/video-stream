@@ -13,6 +13,7 @@ export default function App() {
     display: "block",
     margin: "10px auto"
   };
+  
 
   // add default lottie options
   const defaultOptions = {
